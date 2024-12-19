@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import colors from '@/constants/colors';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -33,12 +33,15 @@ export default function Create() {
               <Ionicons name="arrow-back" size={24} color={colors.zinc}/>
             </Pressable>
 
-            <Text style={styles.logoText}>
-              Dev<Text style={{ color: colors.green }}>App</Text>
-            </Text>
+            <View style={[styles.logo2]}>  
+              <Image
+                source={require('@/assets/images/logo2.png')}
+                style={styles.userLogo}
+              />
+            </View>
 
             <Text style={styles.slogan}>
-              Criar uma conta
+              Cadastrar usuário
             </Text>
           </View>
 
@@ -147,5 +150,14 @@ const styles = StyleSheet.create({
       padding: 8,
       borderRadius: 25,
       marginBottom: 8,
-    }
+    },
+    logo2: {
+      height: 100,
+      width: 200,
+      justifyContent:'flex-end',
+    },
+    userLogo: {
+      height: 100,
+      width: 150,
+    },
 });
