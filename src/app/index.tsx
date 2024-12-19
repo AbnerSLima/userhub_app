@@ -1,7 +1,8 @@
 import colors from '@/constants/colors';
-import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable, Image, ScrollView } from 'react-native';
 import { Link, useRouter } from 'expo-router'
 import { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Login() {
   const router = useRouter();
@@ -14,48 +15,53 @@ export default function Login() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logoText}>
-          Dev<Text style={{ color: colors.green }}>App</Text>
-        </Text>
+    <SafeAreaView style={{ flex: 1}}>
+      <ScrollView style={{ flex: 1, backgroundColor: colors.white }}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Image
+                          source={require('@/assets/images/logo1.png')}
+                          style={styles.userLogo1}
+                        />
 
-        <Text style={styles.slogan}>
-          Login
-        </Text>
-      </View>
+            <Text style={styles.slogan}>
+              Login
+            </Text>
+          </View>
 
-      <View style={styles.form}>
-        <View>
-          <Text style={styles.label}>Usuário</Text>
-          <TextInput
-          placeholder='Digite seu usuário...'
-          style={styles.input}
-          value={usuario}
-          onChangeText={setUsuario}
-        />
-      </View>
+          <View style={styles.form}>
+            <View>
+              <Text style={styles.label}>Usuário</Text>
+              <TextInput
+              placeholder='Digite seu usuário...'
+              style={styles.input}
+              value={usuario}
+              onChangeText={setUsuario}
+            />
+          </View>
 
-      <View>
-        <Text style={styles.label}>Senha</Text>
-        <TextInput
-        placeholder='Digite sua senha...'
-        style={styles.input}
-        secureTextEntry
-        value={senha}
-        onChangeText={setSenha}
-      />
+          <View>
+            <Text style={styles.label}>Senha</Text>
+            <TextInput
+            placeholder='Digite sua senha...'
+            style={styles.input}
+            secureTextEntry
+            value={senha}
+            onChangeText={setSenha}
+          />
 
-      </View>
-        <Pressable style={styles.button} onPress={handleSignIn}>
-          <Text style={styles.buttonText}>Acessar</Text>
-        </Pressable>
+          </View>
+            <Pressable style={styles.button} onPress={handleSignIn}>
+              <Text style={styles.buttonText}>Acessar</Text>
+            </Pressable>
 
-        <Link href='/signup' style={styles.link}>
-          <Text>Ainda não possui uma conta? Cadastre-se</Text>
-        </Link>
-      </View>
-    </View>
+            <Link href='/signup' style={styles.link}>
+              <Text>Ainda não possui uma conta? Cadastre-se</Text>
+            </Link>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -68,6 +74,7 @@ const styles = StyleSheet.create({
   header: {
     paddingLeft: 14,
     paddingRight: 14,
+    alignItems: 'center',
   },
   logoText: {
     fontSize: 20,
@@ -118,5 +125,11 @@ const styles = StyleSheet.create({
     link: {
     marginTop: 16,
     textAlign: 'center',
-  }
+  },
+  userLogo1: {
+    height: 100,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

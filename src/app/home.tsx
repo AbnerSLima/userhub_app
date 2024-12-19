@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import colors from '@/constants/colors';
 import { Link, router, useRouter, } from "expo-router";
 import {
   View,
@@ -92,74 +93,78 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ flex: 1}}>
-        <View style={[styles.button]}>
-          <View style={[styles.logo2]}>  
-            <Image
-              source={require('@/assets/images/logo2.png')}
-              style={styles.userLogo}
-            />
-          </View>
-          <View style={[styles.logo3]}>
-            <View style={styles.linkUser}>
-              <Text>Olá Visitante!</Text>
-              <Link href="/" asChild>
-                <Pressable>
-                  <Text style={styles.linkLogoff}>Sair</Text>
-                </Pressable>
-              </Link>
-            </View>
-            <View>
-            <Button title="Adicionar Usuário" onPress={handleCreate} />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.searchContainer}>
-          <TextInput
-            placeholder="Digite o nome ou email"
-            placeholderTextColor="gray"
-            style={styles.input}
-          />
-          <TouchableOpacity style={styles.searchClean}>
-            <Text style={styles.searchCleanText}>Limpar filtro</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableCell, styles.headerCell, styles.idColumn]}>ID</Text>
-            <Text style={[styles.tableCell, styles.headerCell, styles.nameColumn]}>Nome</Text>
-            <Text style={[styles.tableCell, styles.headerCell, styles.loginColumn]}>Login</Text>
-            <Text style={[styles.tableCell, styles.headerCell, styles.actionColumn]}>Ações</Text>
-          </View>
-
-          {usuarios.map((usuario) => (
-            <View key={usuario.user_id} style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.idColumn]}>{usuario.user_id}</Text>
-              <Text style={[styles.tableCell, styles.nameColumn]}>{usuario.nome}</Text>
-              <Text style={[styles.tableCell, styles.loginColumn]}>{usuario.login}</Text>
-              <View style={[styles.tableCell, styles.actionColumn]}>
-                <TouchableOpacity
-                  style={[styles.button, styles.viewButton]}
-                  onPress={handleProfile(usuario.user_id)}
-                >
-                  <Text style={styles.buttonText}>Visualizar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, styles.editButton]}
-                  onPress={handleEditar(usuario.user_id)}
-                >
-                  <Text style={styles.buttonText}>Editar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, styles.deleteButton]}
-                  onPress={handleExcluir(usuario.user_id)}
-                >
-                  <Text style={styles.buttonText}>Excluir</Text>
-                </TouchableOpacity>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <View style={[styles.button]}>
+              <View style={[styles.logo2]}>  
+                <Image
+                  source={require('@/assets/images/logo2.png')}
+                  style={styles.userLogo}
+                />
+              </View>
+              <View style={[styles.logo3]}>
+                <View style={styles.linkUser}>
+                  <Text>Olá Visitante!</Text>
+                  <Link href="/" asChild>
+                    <Pressable>
+                      <Text style={styles.linkLogoff}>Sair</Text>
+                    </Pressable>
+                  </Link>
+                </View>
+                <View>
+                <Button title="Adicionar Usuário" onPress={handleCreate} />
+                </View>
               </View>
             </View>
-          ))}
+
+            <View style={styles.searchContainer}>
+              <TextInput
+                placeholder="Digite o nome ou email"
+                placeholderTextColor="gray"
+                style={styles.input}
+              />
+              <TouchableOpacity style={styles.searchClean}>
+                <Text style={styles.searchCleanText}>Limpar filtro</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.form}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableCell, styles.headerCell, styles.idColumn]}>ID</Text>
+              <Text style={[styles.tableCell, styles.headerCell, styles.nameColumn]}>Nome</Text>
+              <Text style={[styles.tableCell, styles.headerCell, styles.loginColumn]}>Login</Text>
+              <Text style={[styles.tableCell, styles.headerCell, styles.actionColumn]}>Ações</Text>
+            </View>
+
+            {usuarios.map((usuario) => (
+              <View key={usuario.user_id} style={styles.tableRow}>
+                <Text style={[styles.tableCell, styles.idColumn]}>{usuario.user_id}</Text>
+                <Text style={[styles.tableCell, styles.nameColumn]}>{usuario.nome}</Text>
+                <Text style={[styles.tableCell, styles.loginColumn]}>{usuario.login}</Text>
+                <View style={[styles.tableCell, styles.actionColumn]}>
+                  <TouchableOpacity
+                    style={[styles.button, styles.viewButton]}
+                    onPress={handleProfile(usuario.user_id)}
+                  >
+                    <Text style={styles.buttonText}>Visualizar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.button, styles.editButton]}
+                    onPress={handleEditar(usuario.user_id)}
+                  >
+                    <Text style={styles.buttonText}>Editar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.button, styles.deleteButton]}
+                    onPress={handleExcluir(usuario.user_id)}
+                  >
+                    <Text style={styles.buttonText}>Excluir</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -169,7 +174,8 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f7f7',
+    paddingTop: 10,
+    backgroundColor: colors.zinc,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -305,4 +311,17 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: 'center',
   },
+  header: {
+    paddingLeft: 14,
+    paddingRight: 14,
+  },
+  form: {
+      flex: 1,
+      backgroundColor: colors.white,
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
+      paddingTop: 24,
+      paddingLeft: 14,
+      paddingRight: 14,
+    },
 })
