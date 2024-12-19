@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import colors from '@/constants/colors';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,12 +12,40 @@ export default function Signup() {
   const [senha, setSenha] = useState('');
   const [carregando, setCarregando] = useState(false);
 
-  function handleSignUp(){
-    console.log({
-      nome,
-      usuario,
-      senha
-    })
+  async function handleSignUp(){
+    if (!nome || !usuario || !senha) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+        const response = await fetch('http://savir11.tecnologia.ws/userhub/create_app.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nome,
+                login: usuario,
+                senha,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Alert.alert('Sucesso', data.message || 'Usuário cadastrado com sucesso!');
+            router.replace('/');
+        } else {
+            Alert.alert('Erro', data.error || 'Falha ao cadastrar o usuário.');
+        }
+    } catch (error) {
+        Alert.alert('Erro', 'Não foi possível conectar ao servidor. Verifique sua conexão.');
+    } finally {
+        setCarregando(false);
+    }
   }
 
   return (
@@ -77,9 +105,15 @@ export default function Signup() {
             />
           </View>
 
-            <Pressable style={styles.button} onPress={handleSignUp}>
-              <Text style={styles.buttonText}>Cadastrar</Text>
-            </Pressable>
+          <Pressable 
+              style={[styles.button, carregando && { backgroundColor: colors.gray }]} 
+              onPress={handleSignUp} 
+              disabled={carregando}
+          >
+              <Text style={styles.buttonText}>
+                  {carregando ? 'Aguarde...' : 'Cadastrar'}
+              </Text>
+          </Pressable>
 
           </View>
         </View>

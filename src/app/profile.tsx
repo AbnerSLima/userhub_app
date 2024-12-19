@@ -41,7 +41,7 @@ export default function Profile() {
             </View>
 
             <Text style={styles.slogan}>
-              Editar usuário
+              Cadastro do usuário
             </Text>
           </View>
 
