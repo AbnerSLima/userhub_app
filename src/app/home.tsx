@@ -170,7 +170,7 @@ export default function Home() {
           </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#007bff" />
       ) : (
           <View style={styles.form}>
             <View style={styles.tableHeader}>
