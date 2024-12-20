@@ -105,15 +105,17 @@ export default function Signup() {
             />
           </View>
 
-          <Pressable 
-              style={[styles.button, carregando && { backgroundColor: colors.gray }]} 
-              onPress={handleSignUp} 
-              disabled={carregando}
-          >
-              <Text style={styles.buttonText}>
-                  {carregando ? 'Aguarde...' : 'Cadastrar'}
-              </Text>
-          </Pressable>
+          <View style={styles.buttonCenter}>
+            <Pressable 
+                style={[styles.button, carregando && { backgroundColor: colors.gray }]} 
+                onPress={handleSignUp} 
+                disabled={carregando}
+            >
+                <Text style={styles.buttonText}>
+                    {carregando ? 'Aguarde...' : 'Cadastrar'}
+                </Text>
+            </Pressable>
+          </View>
 
           </View>
         </View>
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
   },
   slogan: {
     fontSize: 34,
-    color: colors.white,
+    color: '#49688d',
     marginBottom: 34,
   },
   form: {
@@ -153,30 +155,35 @@ const styles = StyleSheet.create({
     paddingRight: 14,
   },
   label: {
-    color: colors.zinc,
+    color: '#49688d',
     marginBottom: 4,
   },
   input: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#49688d',
+    borderRadius: 25,
     marginBottom: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 15,
     paddingTop: 14,
     paddingBottom: 14,
+  },
+  buttonCenter: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     button: {
-    backgroundColor: colors.green,
-    paddingTop: 14,
-    paddingBottom: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    borderRadius: 8,
+      backgroundColor: '#2d2d2d',
+      paddingTop: 14,
+      paddingBottom: 14,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '60%',
+      borderRadius: 25,
     },
     buttonText: {
-    color: colors.white,
-    fontWeight: 'bold'
+      color: colors.white,
+      fontWeight: 'bold'
     },
   backButton: {
     backgroundColor: '#888',

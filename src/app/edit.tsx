@@ -1,24 +1,83 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import colors from '@/constants/colors';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image } from 'react-native';
-import { router, useRouter } from 'expo-router';
+import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image, Alert } from 'react-native';
+import { router, useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function Edit() {
+interface Usuario {
+  user_id: number;
+  nome: string;
+  login: string;
+  senha: string;
+  created_at: string;
+}
 
+export default function Edit() {
+  const router = useRouter();
+  const { userId } = useLocalSearchParams();
+  const [userData, setUserData] = useState<Usuario | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [carregando, setCarregando] = useState(false);
   const [nome, setNome] = useState('');
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
-  const [carregando, setCarregando] = useState(false);
 
-  function handleSignUp(){
-    console.log({
-      nome,
-      usuario,
-      senha
-    })
-  }
+
+  const fetchUserData = async (id: string) => {
+      //console.log("ID passado para fetchUserData:", id);
+      try {
+        setLoading(true);
+        const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_user.php?id=${id}`);
+        if (!response.ok) throw new Error('Erro ao buscar os dados do usuário');
+        
+        const data: Usuario = await response.json();
+        setNome(data.nome);
+      setUsuario(data.login);
+      setLoading(false);
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível carregar os dados do usuário.');
+      setLoading(false);
+    }
+  };
+  
+  const handleUpdate = async () => {
+    if (!nome || !usuario || !senha) {
+      Alert.alert('Atenção', 'Todos os campos devem ser preenchidos.');
+      return;
+    }
+
+    try {
+      setCarregando(true);
+      const response = await fetch('http://savir11.tecnologia.ws/userhub/update_app.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: userId,
+          nome,
+          login: usuario,
+          senha,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        Alert.alert('Sucesso', 'Usuário atualizado com sucesso!');
+        router.back();
+      } else {
+        Alert.alert('Erro', data.error || 'Erro ao atualizar usuário.');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível atualizar o usuário.');
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) fetchUserData(userId as string);
+  }, [userId]);
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -77,9 +136,11 @@ export default function Edit() {
             />
           </View>
 
-            <Pressable style={styles.button} onPress={handleSignUp}>
-              <Text style={styles.buttonText}>Cadastrar</Text>
+          <View style={styles.buttonCenter}>
+            <Pressable style={styles.button} onPress={handleUpdate} disabled={carregando}>
+              <Text style={styles.buttonText}>{carregando ? 'Alterando...' : 'Alterar'}</Text>
             </Pressable>
+            </View>
 
           </View>
         </View>
@@ -106,7 +167,7 @@ const styles = StyleSheet.create({
   },
   slogan: {
     fontSize: 34,
-    color: colors.white,
+    color: '#49688d',
     marginBottom: 34,
   },
   form: {
@@ -119,33 +180,38 @@ const styles = StyleSheet.create({
     paddingRight: 14,
   },
   label: {
-    color: colors.zinc,
+    color: '#49688d',
     marginBottom: 4,
   },
   input: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#49688d',
+    borderRadius: 25,
     marginBottom: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 15,
     paddingTop: 14,
     paddingBottom: 14,
+  },
+  buttonCenter: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     button: {
-    backgroundColor: colors.green,
-    paddingTop: 14,
-    paddingBottom: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    borderRadius: 8,
+      backgroundColor: '#d9c877',
+      paddingTop: 14,
+      paddingBottom: 14,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '60%',
+      borderRadius: 25,
     },
     buttonText: {
-    color: colors.white,
-    fontWeight: 'bold'
+      color: colors.white,
+      fontWeight: 'bold'
     },
   backButton: {
-    backgroundColor: colors.green,
+    backgroundColor: '#888',
     alignSelf: 'flex-start',
     padding: 8,
     borderRadius: 25,

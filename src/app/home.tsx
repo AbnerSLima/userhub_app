@@ -14,6 +14,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Usuario {
   user_id: number;
@@ -25,8 +26,14 @@ interface Usuario {
 export default function Home() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [searchText, setSearchText] = useState<string>("");
   const router = useRouter();
   
+  const filteredUsers = usuarios.filter(
+    (usuario) =>
+      usuario.nome.toLowerCase().includes(searchText.toLowerCase()) ||
+      usuario.login.toLowerCase().includes(searchText.toLowerCase())
+  );  
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -42,7 +49,7 @@ export default function Home() {
       } finally {
         setLoading(false);
       }
-    }
+  };
 
     const fetchUserById = async (id: number) => {
       try {
@@ -58,6 +65,18 @@ export default function Home() {
       }
     };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUsers();
+    }, [])
+  );
+
+  const clearFilter = () => {
+    setSearchText("");
+    fetchUsers();
+  };
+
+  
   const deleteUser = async (id: number) => {
     try {
       const response = await fetch(`http://savir11.tecnologia.ws/userhub/delete_app.php`, {
@@ -136,8 +155,10 @@ export default function Home() {
                 placeholder="Digite o nome ou email"
                 placeholderTextColor="gray"
                 style={styles.input}
+                value={searchText}
+                onChangeText={(text) => setSearchText(text)}
               />
-              <TouchableOpacity style={styles.searchClean}>
+              <TouchableOpacity style={styles.searchClean} onPress={clearFilter}>
                 <Text style={styles.searchCleanText}>Limpar filtro</Text>
               </TouchableOpacity>
             </View>
@@ -151,7 +172,7 @@ export default function Home() {
               <Text style={[styles.tableCell, styles.headerCell, styles.actionColumn]}>Ações</Text>
             </View>
 
-            {usuarios.map((usuario) => (
+            {filteredUsers.map((usuario) => (
               <View key={usuario.user_id} style={styles.tableRow}>
                 <Text style={[styles.tableCell, styles.idColumn]}>{usuario.user_id}</Text>
                 <Text style={[styles.tableCell, styles.nameColumn]}>{usuario.nome}</Text>
@@ -255,13 +276,13 @@ const styles = StyleSheet.create({
     width: 150,
   },
   viewButton: {
-    backgroundColor: '#21BFDE',
+    backgroundColor: '#6db29d',
   },
   editButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#d9c877',
   },
   deleteButton: {
-    backgroundColor: '#F44336',
+    backgroundColor: '#b26767',
   },
   buttonText: {
     color: '#fff',

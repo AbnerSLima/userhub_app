@@ -19,33 +19,30 @@ export default function Profile() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchUserData = async (id: string) => {
-    console.log("ID passado para fetchUserData:", id); // Log para verificar o ID
     try {
-      setLoading(true);  // Garantir que o carregamento começa
+      setLoading(true);
       const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_user.php?id=${id}`);
       if (!response.ok) {
-        console.error('Erro na resposta da API', response);  // Log de erro de resposta
+        console.error('Erro na resposta da API', response);
         throw new Error('Erro ao buscar os dados do usuário');
       }
       const data = await response.json();
-      console.log('Dados recebidos da API:', data); // Log para verificar os dados retornados
       if (data) {
         setUserData(data);
       } else {
         Alert.alert('Erro', 'Usuário não encontrado.');
       }
     } catch (error) {
-      console.error('Erro ao fazer requisição:', error); // Log do erro
+      console.error('Erro ao fazer requisição:', error);
       Alert.alert('Erro', 'Não foi possível carregar os dados do usuário.');
     } finally {
-      setLoading(false);  // Garantir que o carregamento termina
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log('ID dentro do useEffect:', userId); // Log para verificar o ID no useEffect
     if (userId) {
-      fetchUserData(userId as string); // Chama a função de busca de dados
+      fetchUserData(userId as string);
     }
   }, [userId]);
 
@@ -118,7 +115,7 @@ const styles = StyleSheet.create({
   },
   slogan: {
     fontSize: 34,
-    color: colors.white,
+    color: '#49688d',
     marginBottom: 34,
   },
   form: {
@@ -131,19 +128,19 @@ const styles = StyleSheet.create({
     paddingRight: 14,
   },
   label: {
-    color: colors.zinc,
+    color: '#49688d',
     marginBottom: 4,
   },
   input: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#49688d',
+    borderRadius: 25,
     marginBottom: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 15,
     paddingTop: 14,
     paddingBottom: 14,
-    },
-    button: {
+  },
+  button: {
     backgroundColor: colors.green,
     paddingTop: 14,
     paddingBottom: 14,
@@ -151,13 +148,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     borderRadius: 8,
-    },
+  },
     buttonText: {
     color: colors.white,
     fontWeight: 'bold'
-    },
+  },
   backButton: {
-    backgroundColor: colors.green,
+    backgroundColor: '#888',
     alignSelf: 'flex-start',
     padding: 8,
     borderRadius: 25,
