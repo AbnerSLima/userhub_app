@@ -82,7 +82,11 @@ export default function Profile() {
                   <Text>Nome: {userData.nome}</Text>
                   <Text>Login: {userData.login}</Text>
                   <Text>Criado em: {new Date(userData.created_at).toLocaleDateString()}</Text>
-                  <Button title="Editar" onPress={() => router.push(`/profile?userId=${userId}`)} />
+                  <View style={styles.buttonCenter}>
+                    <Pressable style={styles.button} onPress={() => router.push(`/profile?userId=${userId}`)} >
+                      <Text style={styles.buttonText}>Editar</Text>
+                    </Pressable>
+                  </View>
                   </View>
               ) : (
                 <Text>Usuário não encontrado</Text>
@@ -140,14 +144,20 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 14,
   },
+  buttonCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+  },
   button: {
-    backgroundColor: colors.green,
+    backgroundColor: colors.amarelo,
     paddingTop: 14,
     paddingBottom: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    borderRadius: 8,
+    width: '60%',
+    borderRadius: 25,
   },
     buttonText: {
     color: colors.white,

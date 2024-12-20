@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     },
     slogan: {
       fontSize: 34,
-      color: colors.white,
+      color: '#49688d',
       marginBottom: 34,
     },
     form: {
@@ -151,17 +151,17 @@ const styles = StyleSheet.create({
       paddingRight: 14,
     },
     label: {
-      color: colors.zinc,
+      color: '#49688d',
       marginBottom: 4,
     },
     input: {
-      borderWidth: 1,
-      borderColor: colors.gray,
-      borderRadius: 8,
+      borderWidth: 2,
+      borderColor: '#49688d',
+      borderRadius: 25,
       marginBottom: 16,
-      paddingHorizontal: 8,
+      paddingHorizontal: 15,
       paddingTop: 14,
-      paddingBottom: 14,
+      paddingBottom: 14
       },
     buttonCenter: {
         flex: 1,
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
       },
       button: {
-        backgroundColor: '#6b8bb2',
+        backgroundColor: colors.azul,
         paddingTop: 14,
         paddingBottom: 14,
         alignItems: 'center',

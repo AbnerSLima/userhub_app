@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     button: {
-      backgroundColor: '#2d2d2d',
+      backgroundColor: colors.preto,
       paddingTop: 14,
       paddingBottom: 14,
       alignItems: 'center',

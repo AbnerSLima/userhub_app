@@ -19,10 +19,9 @@ export default function Login() {
     setCarregando(true);
 
     try {
-      const response = await fetch('http://seu-servidor.com/login_app.php', {
+      const response = await fetch('http://savir11.tecnologia.ws/userhub/login_app.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        mode: 'no-cors',
         body: JSON.stringify({
           login: usuario,
           senha: senha,
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#2d2d2d',
+    backgroundColor: colors.preto,
     paddingTop: 14,
     paddingBottom: 14,
     alignItems: 'center',

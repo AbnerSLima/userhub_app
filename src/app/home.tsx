@@ -144,8 +144,10 @@ export default function Home() {
                     </Pressable>
                   </Link>
                 </View>
-                <View>
-                <Button title="Adicionar Usuário" onPress={handleCreate} />
+                <View style={styles.buttonCenter}>
+                  <Pressable style={[styles.button, styles.creatButton]} onPress={handleCreate}>
+                    <Text style={styles.buttonText}>Novo Usuário</Text>
+                  </Pressable>
                 </View>
               </View>
             </View>
@@ -249,6 +251,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#007bff',
     padding: 10,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   tableRow: {
     flexDirection: 'row',
@@ -266,27 +270,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flex: 2,
-  },
   userLogo: {
     height: 100,
     width: 150,
   },
+  creatButton: {
+    backgroundColor: colors.azul,
+    padding: 8,
+  },
   viewButton: {
-    backgroundColor: '#6db29d',
+    backgroundColor: colors.verde,
   },
   editButton: {
-    backgroundColor: '#d9c877',
+    backgroundColor: colors.amarelo,
   },
   deleteButton: {
-    backgroundColor: '#b26767',
+    backgroundColor: colors.vermelho,
   },
   buttonText: {
     color: '#fff',
     fontSize: 12,
+  },
+  buttonCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
     padding: 5,
