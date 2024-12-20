@@ -284,6 +284,8 @@ const styles = StyleSheet.create({
   creatButton: {
     backgroundColor: colors.azul,
     padding: 8,
+    paddingStart: 16,
+    paddingEnd: 16,
   },
   viewButton: {
     backgroundColor: colors.verde,
