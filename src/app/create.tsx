@@ -107,9 +107,11 @@ export default function Create() {
             />
           </View>
 
-          <Pressable style={styles.button} onPress={handleSignUp} disabled={carregando}>
-            <Text style={styles.buttonText}>{carregando ? 'Cadastrando...' : 'Cadastrar'}</Text>
-          </Pressable>
+          <View style={styles.buttonCenter}>
+            <Pressable style={styles.button} onPress={handleSignUp} disabled={carregando}>
+              <Text style={styles.buttonText}>{carregando ? 'Cadastrando...' : 'Cadastrar'}</Text>
+            </Pressable>
+          </View>
 
           </View>
         </View>
@@ -161,18 +163,23 @@ const styles = StyleSheet.create({
       paddingTop: 14,
       paddingBottom: 14,
       },
+    buttonCenter: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
       button: {
-      backgroundColor: colors.green,
-      paddingTop: 14,
-      paddingBottom: 14,
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '100%',
-      borderRadius: 8,
+        backgroundColor: '#6b8bb2',
+        paddingTop: 14,
+        paddingBottom: 14,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '60%',
+        borderRadius: 25,
       },
       buttonText: {
-      color: colors.white,
-      fontWeight: 'bold'
+        color: colors.white,
+        fontWeight: 'bold'
       },
     backButton: {
       backgroundColor: colors.green,
