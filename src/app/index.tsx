@@ -1,7 +1,7 @@
-import colors from '@/constants/colors';
-import { View, Text, StyleSheet, TextInput, Pressable, Image, ScrollView } from 'react-native';
-import { Link, useRouter } from 'expo-router'
 import { useState } from 'react';
+import colors from '@/constants/colors';
+import { Link, useRouter } from 'expo-router'
+import { View, Text, StyleSheet, TextInput, Pressable, Image, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Login() {
@@ -10,8 +10,36 @@ export default function Login() {
   const [senha, setSenha] = useState('');
   const [carregando, setCarregando] = useState(false);
 
-  function handleSignIn(){
-    router.push('/home');
+  async function handleSignIn() {
+    if (!usuario || !senha) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+      const response = await fetch('http://savir11.tecnologia.ws/userhub/login_app.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          login: usuario,
+          senha: senha,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        router.push('/home');
+      } else {
+        Alert.alert('Erro', data.error || 'Usuário ou senha inválidos.');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao se conectar ao servidor. Tente novamente.');
+    } finally {
+      setCarregando(false);
+    }
   }
 
   return (
@@ -43,20 +71,22 @@ export default function Login() {
           <View>
             <Text style={styles.label}>Senha</Text>
             <TextInput
-            placeholder='Digite sua senha...'
-            style={styles.input}
-            secureTextEntry
-            value={senha}
-            onChangeText={setSenha}
-          />
-
+              placeholder='Digite sua senha...'
+              style={styles.input}
+              secureTextEntry
+              value={senha}
+              onChangeText={setSenha}
+            />
           </View>
-            <Pressable style={styles.button} onPress={handleSignIn}>
-              <Text style={styles.buttonText}>Acessar</Text>
+          <View style={styles.buttonCenter}>
+            <Pressable style={styles.button} onPress={handleSignIn} disabled={carregando}>
+              <Text style={styles.buttonText}>{carregando ? 'Carregando...' : 'Acessar'}</Text>
             </Pressable>
+          </View>
 
-            <Link href='/signup' style={styles.link}>
-              <Text>Ainda não possui uma conta? Cadastre-se</Text>
+            <Text style={styles.link}>Ainda não possui uma conta?</Text>
+            <Link href='/signup' style={styles.link1}>
+              <Text>Cadastre-se</Text>
             </Link>
           </View>
         </View>
@@ -84,7 +114,7 @@ const styles = StyleSheet.create({
   },
   slogan: {
     fontSize: 34,
-    color: colors.white,
+    color: '#49688d',
     marginBottom: 34,
   },
   form: {
@@ -97,34 +127,45 @@ const styles = StyleSheet.create({
     paddingRight: 14,
   },
   label: {
-    color: colors.zinc,
+    color: '#49688d',
     marginBottom: 4,
   },
   input: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#49688d',
+    borderRadius: 25,
     marginBottom: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 15,
     paddingTop: 14,
     paddingBottom: 14,
     },
-    button: {
-    backgroundColor: colors.green,
+  buttonCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: colors.preto,
     paddingTop: 14,
     paddingBottom: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    borderRadius: 8,
-    },
-    buttonText: {
+    width: '60%',
+    borderRadius: 25,
+  },
+  buttonText: {
     color: colors.white,
     fontWeight: 'bold'
-    },
-    link: {
+  },
+  link: {
     marginTop: 16,
     textAlign: 'center',
+  },
+  link1: {
+    marginTop: 16,
+    textAlign: 'center',
+    color: 'blue',
+    textDecorationLine: 'underline',
   },
   userLogo1: {
     height: 100,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import colors from '@/constants/colors';
-import { Link, router, useRouter, } from "expo-router";
+import { Link, useRouter, } from "expo-router";
 import {
   View,
   StyleSheet,
@@ -14,6 +14,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Usuario {
   user_id: number;
@@ -25,13 +26,19 @@ interface Usuario {
 export default function Home() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [searchText, setSearchText] = useState<string>("");
   const router = useRouter();
-  const API_URL = "http://savir11.tecnologia.ws/userhub";
+  
+  const filteredUsers = usuarios.filter(
+    (usuario) =>
+      usuario.nome.toLowerCase().includes(searchText.toLowerCase()) ||
+      usuario.login.toLowerCase().includes(searchText.toLowerCase())
+  );  
 
   const fetchUsers = async () => {
     setLoading(true);
       try {
-        const response = await fetch(`${API_URL}/read_app.php`);
+        const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_app.php`);
         console.log("Response status:", response.status);
         const data = await response.json();
         console.log("Fetched data:", data);
@@ -42,12 +49,38 @@ export default function Home() {
       } finally {
         setLoading(false);
       }
-    }
+  };
 
+    const fetchUserById = async (id: number) => {
+      try {
+        const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_user.php?id=${id}`);
+        if (!response.ok) {
+          throw new Error(`Erro ao buscar o usuário: ${response.status}`);
+        }
+        const userData = await response.json();
+        return userData;
+      } catch (error) {
+        console.error(error);
+        Alert.alert("Erro", "Não foi possível carregar os dados do usuário.");
+      }
+    };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUsers();
+    }, [])
+  );
+
+  const clearFilter = () => {
+    setSearchText("");
+    fetchUsers();
+  };
+
+  
   const deleteUser = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/delete_app.php`, {
-        method: "POST",
+      const response = await fetch(`http://savir11.tecnologia.ws/userhub/delete_app.php`, {
+        method: "DELETE",
         headers: { "Content-Type": "application/json", },
         body: JSON.stringify({ user_id: id }),
       });
@@ -71,12 +104,12 @@ export default function Home() {
     router.push("/create");
   };
 
-  const handleProfile = (id: number) => () => {
-    router.push(`/profile?id=${id}`);
+  const handleProfile = (id: number) => {
+    router.push(`/profile?userId=${id}`);
   };
-
-  const handleEditar = (id: number) => () => {
-    router.push(`/edit?id=${id}`);
+  
+  const handleEditar = (id: number) => async () => {
+    router.push(`/edit?userId=${id}`);
   };
 
   const handleExcluir = (id: number) => () => {
@@ -111,8 +144,10 @@ export default function Home() {
                     </Pressable>
                   </Link>
                 </View>
-                <View>
-                <Button title="Adicionar Usuário" onPress={handleCreate} />
+                <View style={styles.buttonCenter}>
+                  <Pressable style={[styles.button, styles.creatButton]} onPress={handleCreate}>
+                    <Text style={styles.buttonText}>Novo Usuário</Text>
+                  </Pressable>
                 </View>
               </View>
             </View>
@@ -122,8 +157,10 @@ export default function Home() {
                 placeholder="Digite o nome ou email"
                 placeholderTextColor="gray"
                 style={styles.input}
+                value={searchText}
+                onChangeText={(text) => setSearchText(text)}
               />
-              <TouchableOpacity style={styles.searchClean}>
+              <TouchableOpacity style={styles.searchClean} onPress={clearFilter}>
                 <Text style={styles.searchCleanText}>Limpar filtro</Text>
               </TouchableOpacity>
             </View>
@@ -137,7 +174,7 @@ export default function Home() {
               <Text style={[styles.tableCell, styles.headerCell, styles.actionColumn]}>Ações</Text>
             </View>
 
-            {usuarios.map((usuario) => (
+            {filteredUsers.map((usuario) => (
               <View key={usuario.user_id} style={styles.tableRow}>
                 <Text style={[styles.tableCell, styles.idColumn]}>{usuario.user_id}</Text>
                 <Text style={[styles.tableCell, styles.nameColumn]}>{usuario.nome}</Text>
@@ -145,7 +182,7 @@ export default function Home() {
                 <View style={[styles.tableCell, styles.actionColumn]}>
                   <TouchableOpacity
                     style={[styles.button, styles.viewButton]}
-                    onPress={handleProfile(usuario.user_id)}
+                    onPress={() => handleProfile(usuario.user_id)}
                   >
                     <Text style={styles.buttonText}>Visualizar</Text>
                   </TouchableOpacity>
@@ -157,7 +194,7 @@ export default function Home() {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.button, styles.deleteButton]}
-                    onPress={handleExcluir(usuario.user_id)}
+                    onPress={() => handleExcluir(usuario.user_id)}
                   >
                     <Text style={styles.buttonText}>Excluir</Text>
                   </TouchableOpacity>
@@ -214,6 +251,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#007bff',
     padding: 10,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
   },
   tableRow: {
     flexDirection: 'row',
@@ -231,27 +270,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flex: 2,
-  },
   userLogo: {
     height: 100,
     width: 150,
   },
+  creatButton: {
+    backgroundColor: colors.azul,
+    padding: 8,
+  },
   viewButton: {
-    backgroundColor: '#21BFDE',
+    backgroundColor: colors.verde,
   },
   editButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.amarelo,
   },
   deleteButton: {
-    backgroundColor: '#F44336',
+    backgroundColor: colors.vermelho,
   },
   buttonText: {
     color: '#fff',
     fontSize: 12,
+  },
+  buttonCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
     padding: 5,

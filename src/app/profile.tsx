@@ -1,24 +1,50 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '@/constants/colors';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image } from 'react-native';
-import { router } from 'expo-router';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, ScrollView, Image, Alert } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+interface Usuario {
+  user_id: number;
+  nome: string;
+  login: string;
+  created_at: string;
+}
+
 export default function Profile() {
+  const router = useRouter();
+  const { userId } = useLocalSearchParams();
+  const [userData, setUserData] = useState<Usuario | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const [nome, setNome] = useState('');
-  const [usuario, setUsuario] = useState('');
-  const [senha, setSenha] = useState('');
-  const [carregando, setCarregando] = useState(false);
+  const fetchUserData = async (id: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_user.php?id=${id}`);
+      if (!response.ok) {
+        console.error('Erro na resposta da API', response);
+        throw new Error('Erro ao buscar os dados do usuário');
+      }
+      const data = await response.json();
+      if (data) {
+        setUserData(data);
+      } else {
+        Alert.alert('Erro', 'Usuário não encontrado.');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer requisição:', error);
+      Alert.alert('Erro', 'Não foi possível carregar os dados do usuário.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  function handleSignUp(){
-    console.log({
-      nome,
-      usuario,
-      senha
-    })
-  }
+  useEffect(() => {
+    if (userId) {
+      fetchUserData(userId as string);
+    }
+  }, [userId]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -41,46 +67,33 @@ export default function Profile() {
             </View>
 
             <Text style={styles.slogan}>
-              Editar usuário
+              Dados do usuário
             </Text>
           </View>
 
           <View style={styles.form}>
-            <View>
-              <Text style={styles.label}>Nome</Text>
-              <TextInput
-              placeholder='Digite seu nome...'
-              style={styles.input}
-              value={nome}
-              onChangeText={setNome}
-            />
-          </View>
-
-          <View>
-              <Text style={styles.label}>Usuário</Text>
-              <TextInput
-              placeholder='Digite seu usuário...'
-              style={styles.input}
-              value={usuario}
-              onChangeText={setUsuario}
-            />
-          </View>
-
-          <View>
-              <Text style={styles.label}>Senha</Text>
-              <TextInput
-              placeholder='Digite sua senha...'
-              style={styles.input}
-              secureTextEntry
-              value={senha}
-              onChangeText={setSenha}
-            />
-          </View>
-
-            <Pressable style={styles.button} onPress={handleSignUp}>
-              <Text style={styles.buttonText}>Cadastrar</Text>
-            </Pressable>
-
+            {loading ? (
+              <Text>Carregando...</Text>
+            ) : (
+              <View>
+                {userData ? (
+                <View>
+                  <Text>ID: {userData.user_id}</Text>
+                  <Text>Nome: {userData.nome}</Text>
+                  <Text>Login: {userData.login}</Text>
+                  <Text>Criado em: {new Date(userData.created_at).toLocaleDateString()}</Text>
+                  <View style={styles.buttonCenter}>
+                    <Pressable style={styles.button} onPress={() => router.push(`/profile?userId=${userId}`)} >
+                      <Text style={styles.buttonText}>Editar</Text>
+                    </Pressable>
+                  </View>
+                  </View>
+              ) : (
+                <Text>Usuário não encontrado</Text>
+              )}
+              </View>
+            )}
+            
           </View>
         </View>
       </ScrollView>
@@ -106,7 +119,7 @@ const styles = StyleSheet.create({
   },
   slogan: {
     fontSize: 34,
-    color: colors.white,
+    color: '#49688d',
     marginBottom: 34,
   },
   form: {
@@ -119,33 +132,39 @@ const styles = StyleSheet.create({
     paddingRight: 14,
   },
   label: {
-    color: colors.zinc,
+    color: '#49688d',
     marginBottom: 4,
   },
   input: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#49688d',
+    borderRadius: 25,
     marginBottom: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 15,
     paddingTop: 14,
     paddingBottom: 14,
-    },
-    button: {
-    backgroundColor: colors.green,
+  },
+  buttonCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+  },
+  button: {
+    backgroundColor: colors.amarelo,
     paddingTop: 14,
     paddingBottom: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    borderRadius: 8,
-    },
+    width: '60%',
+    borderRadius: 25,
+  },
     buttonText: {
     color: colors.white,
     fontWeight: 'bold'
-    },
+  },
   backButton: {
-    backgroundColor: colors.green,
+    backgroundColor: '#888',
     alignSelf: 'flex-start',
     padding: 8,
     borderRadius: 25,

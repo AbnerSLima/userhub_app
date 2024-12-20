@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import colors from '@/constants/colors';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,12 +12,42 @@ export default function Create() {
   const [senha, setSenha] = useState('');
   const [carregando, setCarregando] = useState(false);
 
-  function handleSignUp(){
-    console.log({
-      nome,
-      usuario,
-      senha
-    })
+  async function handleSignUp(){
+    if (!nome || !usuario || !senha) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+      const response = await fetch('http://savir11.tecnologia.ws/userhub/create_app.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nome,
+          login: usuario,
+          senha,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Sucesso', data.message || 'Usuário cadastrado com sucesso!');
+        setNome('');
+        setUsuario('');
+        setSenha('');
+      } else {
+        Alert.alert('Erro', data.error || 'Erro ao cadastrar usuário.');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível conectar ao servidor.');
+    } finally {
+      setCarregando(false);
+    }
   }
 
   return (
@@ -77,9 +107,11 @@ export default function Create() {
             />
           </View>
 
-            <Pressable style={styles.button} onPress={handleSignUp}>
-              <Text style={styles.buttonText}>Cadastrar</Text>
+          <View style={styles.buttonCenter}>
+            <Pressable style={styles.button} onPress={handleSignUp} disabled={carregando}>
+              <Text style={styles.buttonText}>{carregando ? 'Cadastrando...' : 'Cadastrar'}</Text>
             </Pressable>
+          </View>
 
           </View>
         </View>
@@ -106,7 +138,7 @@ const styles = StyleSheet.create({
     },
     slogan: {
       fontSize: 34,
-      color: colors.white,
+      color: '#49688d',
       marginBottom: 34,
     },
     form: {
@@ -119,30 +151,35 @@ const styles = StyleSheet.create({
       paddingRight: 14,
     },
     label: {
-      color: colors.zinc,
+      color: '#49688d',
       marginBottom: 4,
     },
     input: {
-      borderWidth: 1,
-      borderColor: colors.gray,
-      borderRadius: 8,
+      borderWidth: 2,
+      borderColor: '#49688d',
+      borderRadius: 25,
       marginBottom: 16,
-      paddingHorizontal: 8,
+      paddingHorizontal: 15,
       paddingTop: 14,
-      paddingBottom: 14,
+      paddingBottom: 14
+      },
+    buttonCenter: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
       },
       button: {
-      backgroundColor: colors.green,
-      paddingTop: 14,
-      paddingBottom: 14,
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '100%',
-      borderRadius: 8,
+        backgroundColor: colors.azul,
+        paddingTop: 14,
+        paddingBottom: 14,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '60%',
+        borderRadius: 25,
       },
       buttonText: {
-      color: colors.white,
-      fontWeight: 'bold'
+        color: colors.white,
+        fontWeight: 'bold'
       },
     backButton: {
       backgroundColor: colors.green,
