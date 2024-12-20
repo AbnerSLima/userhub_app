@@ -12,6 +12,8 @@ import {
   Pressable,
   Alert,
   ScrollView,
+  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -28,6 +30,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const router = useRouter();
+  const [data, setData] = useState([]);
   
   const filteredUsers = usuarios.filter(
     (usuario) =>
@@ -137,9 +140,9 @@ export default function Home() {
               </View>
               <View style={[styles.logo3]}>
                 <View style={styles.linkUser}>
-                  <Text>Olá Visitante!</Text>
+                  <Text>Bem-vindo!</Text>
                   <Link href="/" asChild>
-                    <Pressable>
+                    <Pressable onPress={() => { router.push('/'); }}>
                       <Text style={styles.linkLogoff}>Sair</Text>
                     </Pressable>
                   </Link>
@@ -166,6 +169,9 @@ export default function Home() {
             </View>
           </View>
 
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
           <View style={styles.form}>
             <View style={styles.tableHeader}>
               <Text style={[styles.tableCell, styles.headerCell, styles.idColumn]}>ID</Text>
@@ -173,7 +179,7 @@ export default function Home() {
               <Text style={[styles.tableCell, styles.headerCell, styles.loginColumn]}>Login</Text>
               <Text style={[styles.tableCell, styles.headerCell, styles.actionColumn]}>Ações</Text>
             </View>
-
+        
             {filteredUsers.map((usuario) => (
               <View key={usuario.user_id} style={styles.tableRow}>
                 <Text style={[styles.tableCell, styles.idColumn]}>{usuario.user_id}</Text>
@@ -202,6 +208,7 @@ export default function Home() {
               </View>
             ))}
           </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
