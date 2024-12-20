@@ -9,12 +9,12 @@ interface Usuario {
   user_id: number;
   nome: string;
   login: string;
-  data_cadastro: string;
+  created_at: string;
 }
 
 export default function Profile() {
   const router = useRouter();
-  const { id } = useLocalSearchParams();
+  const { userId } = useLocalSearchParams();
   const [userData, setUserData] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -43,11 +43,11 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    console.log('ID dentro do useEffect:', id); // Log para verificar o ID no useEffect
-    if (id) {
-      fetchUserData(id as string); // Chama a função de busca de dados
+    console.log('ID dentro do useEffect:', userId); // Log para verificar o ID no useEffect
+    if (userId) {
+      fetchUserData(userId as string); // Chama a função de busca de dados
     }
-  }, [id]);
+  }, [userId]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -84,17 +84,15 @@ export default function Profile() {
                   <Text>ID: {userData.user_id}</Text>
                   <Text>Nome: {userData.nome}</Text>
                   <Text>Login: {userData.login}</Text>
-                  <Text>Criado em: {new Date(userData.data_cadastro).toLocaleDateString()}</Text>
-                  <Button title="Editar" onPress={() => router.push(`/profile?userId=${id}`)} />
-                </View>
+                  <Text>Criado em: {new Date(userData.created_at).toLocaleDateString()}</Text>
+                  <Button title="Editar" onPress={() => router.push(`/profile?userId=${userId}`)} />
+                  </View>
               ) : (
                 <Text>Usuário não encontrado</Text>
               )}
               </View>
             )}
-            <Pressable style={styles.button}>
-              <Text style={styles.buttonText}>Editar</Text>
-            </Pressable>
+            
           </View>
         </View>
       </ScrollView>

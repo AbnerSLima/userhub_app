@@ -26,6 +26,7 @@ export default function Home() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -85,15 +86,11 @@ export default function Home() {
   };
 
   const handleProfile = (id: number) => {
-    console.log(id);
     router.push(`/profile?userId=${id}`);
   };
   
   const handleEditar = (id: number) => async () => {
-    const userData = await fetchUserById(id);
-    if (userData) {
-      router.push(`/edit?userId=${id}`);
-    }
+    router.push(`/edit?userId=${id}`);
   };
 
   const handleExcluir = (id: number) => () => {
