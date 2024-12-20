@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import colors from '../../constants/Colors';
+import colors from '@/constants/colors';
 import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image, Alert } from 'react-native';
 import { router, useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,7 +25,6 @@ export default function Edit() {
 
 
   const fetchUserData = async (id: string) => {
-      //console.log("ID passado para fetchUserData:", id);
       try {
         setLoading(true);
         const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_user.php?id=${id}`);
@@ -198,7 +197,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     button: {
-      backgroundColor: '#d9c877',
+      backgroundColor: colors.azul,
       paddingTop: 14,
       paddingBottom: 14,
       alignItems: 'center',

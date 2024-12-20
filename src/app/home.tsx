@@ -81,6 +81,12 @@ export default function Home() {
 
   
   const deleteUser = async (id: number) => {
+    Alert.alert(
+      "Confirmar Exclusão",
+      "Você tem certeza que deseja excluir este usuário?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Excluir", onPress: async () => {
     try {
       const response = await fetch(`http://savir11.tecnologia.ws/userhub/delete_app.php`, {
         method: "DELETE",
@@ -97,6 +103,9 @@ export default function Home() {
       console.error(error);
       Alert.alert("Erro", "Não foi possível excluir o usuário.");
     }
+  }
+}
+  ]);
   };
 
   useEffect(() => {
@@ -115,16 +124,7 @@ export default function Home() {
     router.push(`/edit?userId=${id}`);
   };
 
-  const handleExcluir = (id: number) => () => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      "Você tem certeza que deseja excluir este usuário?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Excluir", onPress: () => deleteUser(id) },
-      ]
-    );
-  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -157,7 +157,7 @@ export default function Home() {
 
             <View style={styles.searchContainer}>
               <TextInput
-                placeholder="Digite o nome ou email"
+                placeholder="Digite o nome ou login"
                 placeholderTextColor="gray"
                 style={styles.input}
                 value={searchText}
@@ -200,7 +200,7 @@ export default function Home() {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.button, styles.deleteButton]}
-                    onPress={() => handleExcluir(usuario.user_id)}
+                    onPress={() => deleteUser(usuario.user_id)}
                   >
                     <Text style={styles.buttonText}>Excluir</Text>
                   </TouchableOpacity>

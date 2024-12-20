@@ -193,14 +193,16 @@ const styles = StyleSheet.create({
   },
   containerInfo: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent:'flex-start',
     paddingBottom: 10,
   },
   textInfoTitle: {
     fontSize: 20,
     fontWeight: 400,
+    color: '#49688d',
   },
   texrInfoDesc: {
-    fontSize: 14,
+    fontSize: 20,
+    color: colors.preto,
   }
 });
