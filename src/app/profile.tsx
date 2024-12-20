@@ -95,7 +95,7 @@ export default function Profile() {
                     <Text style={styles.texrInfoDesc}> {new Date(userData.created_at).toLocaleDateString()}</Text>
                   </View>
                   <View style={styles.buttonCenter}>
-                    <Pressable style={styles.button} onPress={() => router.push(`/profile?userId=${userId}`)} >
+                    <Pressable style={styles.button} onPress={() => router.push(`/edit?userId=${userId}`)} >
                       <Text style={styles.buttonText}>Editar</Text>
                     </Pressable>
                   </View>
@@ -192,9 +192,9 @@ const styles = StyleSheet.create({
     width: 150,
   },
   containerInfo: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 7,
-
+    paddingBottom: 10,
   },
   textInfoTitle: {
     fontSize: 20,
