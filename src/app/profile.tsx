@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import colors from '../../constants/Colors';
+import colors from '@/constants/colors';
 import { View, Text, StyleSheet, TextInput, Button, Pressable, ScrollView, Image, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
