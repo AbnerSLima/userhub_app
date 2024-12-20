@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import colors from '@/constants/colors';
 import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image } from 'react-native';
-import { router } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

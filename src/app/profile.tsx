@@ -1,24 +1,53 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '@/constants/colors';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, Image } from 'react-native';
-import { router } from 'expo-router';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, ScrollView, Image, Alert } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+interface Usuario {
+  user_id: number;
+  nome: string;
+  login: string;
+  data_cadastro: string;
+}
+
 export default function Profile() {
+  const router = useRouter();
+  const { id } = useLocalSearchParams();
+  const [userData, setUserData] = useState<Usuario | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const [nome, setNome] = useState('');
-  const [usuario, setUsuario] = useState('');
-  const [senha, setSenha] = useState('');
-  const [carregando, setCarregando] = useState(false);
+  const fetchUserData = async (id: string) => {
+    console.log("ID passado para fetchUserData:", id); // Log para verificar o ID
+    try {
+      setLoading(true);  // Garantir que o carregamento começa
+      const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_user.php?id=${id}`);
+      if (!response.ok) {
+        console.error('Erro na resposta da API', response);  // Log de erro de resposta
+        throw new Error('Erro ao buscar os dados do usuário');
+      }
+      const data = await response.json();
+      console.log('Dados recebidos da API:', data); // Log para verificar os dados retornados
+      if (data) {
+        setUserData(data);
+      } else {
+        Alert.alert('Erro', 'Usuário não encontrado.');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer requisição:', error); // Log do erro
+      Alert.alert('Erro', 'Não foi possível carregar os dados do usuário.');
+    } finally {
+      setLoading(false);  // Garantir que o carregamento termina
+    }
+  };
 
-  function handleSignUp(){
-    console.log({
-      nome,
-      usuario,
-      senha
-    })
-  }
+  useEffect(() => {
+    console.log('ID dentro do useEffect:', id); // Log para verificar o ID no useEffect
+    if (id) {
+      fetchUserData(id as string); // Chama a função de busca de dados
+    }
+  }, [id]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -41,46 +70,31 @@ export default function Profile() {
             </View>
 
             <Text style={styles.slogan}>
-              Cadastro do usuário
+              Dados do usuário
             </Text>
           </View>
 
           <View style={styles.form}>
-            <View>
-              <Text style={styles.label}>Nome</Text>
-              <TextInput
-              placeholder='Digite seu nome...'
-              style={styles.input}
-              value={nome}
-              onChangeText={setNome}
-            />
-          </View>
-
-          <View>
-              <Text style={styles.label}>Usuário</Text>
-              <TextInput
-              placeholder='Digite seu usuário...'
-              style={styles.input}
-              value={usuario}
-              onChangeText={setUsuario}
-            />
-          </View>
-
-          <View>
-              <Text style={styles.label}>Senha</Text>
-              <TextInput
-              placeholder='Digite sua senha...'
-              style={styles.input}
-              secureTextEntry
-              value={senha}
-              onChangeText={setSenha}
-            />
-          </View>
-
-            <Pressable style={styles.button} onPress={handleSignUp}>
-              <Text style={styles.buttonText}>Cadastrar</Text>
+            {loading ? (
+              <Text>Carregando...</Text>
+            ) : (
+              <View>
+                {userData ? (
+                <View>
+                  <Text>ID: {userData.user_id}</Text>
+                  <Text>Nome: {userData.nome}</Text>
+                  <Text>Login: {userData.login}</Text>
+                  <Text>Criado em: {new Date(userData.data_cadastro).toLocaleDateString()}</Text>
+                  <Button title="Editar" onPress={() => router.push(`/profile?userId=${id}`)} />
+                </View>
+              ) : (
+                <Text>Usuário não encontrado</Text>
+              )}
+              </View>
+            )}
+            <Pressable style={styles.button}>
+              <Text style={styles.buttonText}>Editar</Text>
             </Pressable>
-
           </View>
         </View>
       </ScrollView>

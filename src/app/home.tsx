@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import colors from '@/constants/colors';
-import { Link, router, useRouter, } from "expo-router";
+import { Link, useRouter, } from "expo-router";
 import {
   View,
   StyleSheet,
@@ -26,12 +26,11 @@ export default function Home() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
-  const API_URL = "http://savir11.tecnologia.ws/userhub";
 
   const fetchUsers = async () => {
     setLoading(true);
       try {
-        const response = await fetch(`${API_URL}/read_app.php`);
+        const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_app.php`);
         console.log("Response status:", response.status);
         const data = await response.json();
         console.log("Fetched data:", data);
@@ -44,10 +43,24 @@ export default function Home() {
       }
     }
 
+    const fetchUserById = async (id: number) => {
+      try {
+        const response = await fetch(`http://savir11.tecnologia.ws/userhub/read_user.php?id=${id}`);
+        if (!response.ok) {
+          throw new Error(`Erro ao buscar o usuário: ${response.status}`);
+        }
+        const userData = await response.json();
+        return userData;
+      } catch (error) {
+        console.error(error);
+        Alert.alert("Erro", "Não foi possível carregar os dados do usuário.");
+      }
+    };
+
   const deleteUser = async (id: number) => {
     try {
-      const response = await fetch(`${API_URL}/delete_app.php`, {
-        method: "POST",
+      const response = await fetch(`http://savir11.tecnologia.ws/userhub/delete_app.php`, {
+        method: "DELETE",
         headers: { "Content-Type": "application/json", },
         body: JSON.stringify({ user_id: id }),
       });
@@ -71,12 +84,16 @@ export default function Home() {
     router.push("/create");
   };
 
-  const handleProfile = (id: number) => () => {
-    router.push(`/profile?id=${id}`);
+  const handleProfile = (id: number) => {
+    console.log(id);
+    router.push(`/profile?userId=${id}`);
   };
-
-  const handleEditar = (id: number) => () => {
-    router.push(`/edit?id=${id}`);
+  
+  const handleEditar = (id: number) => async () => {
+    const userData = await fetchUserById(id);
+    if (userData) {
+      router.push(`/edit?userId=${id}`);
+    }
   };
 
   const handleExcluir = (id: number) => () => {
@@ -145,7 +162,7 @@ export default function Home() {
                 <View style={[styles.tableCell, styles.actionColumn]}>
                   <TouchableOpacity
                     style={[styles.button, styles.viewButton]}
-                    onPress={handleProfile(usuario.user_id)}
+                    onPress={() => handleProfile(usuario.user_id)}
                   >
                     <Text style={styles.buttonText}>Visualizar</Text>
                   </TouchableOpacity>
@@ -157,7 +174,7 @@ export default function Home() {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.button, styles.deleteButton]}
-                    onPress={handleExcluir(usuario.user_id)}
+                    onPress={() => handleExcluir(usuario.user_id)}
                   >
                     <Text style={styles.buttonText}>Excluir</Text>
                   </TouchableOpacity>
