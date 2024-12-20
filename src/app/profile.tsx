@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import colors from '@/constants/colors';
+import colors from '../../constants/Colors';
 import { View, Text, StyleSheet, TextInput, Button, Pressable, ScrollView, Image, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -78,12 +78,24 @@ export default function Profile() {
               <View>
                 {userData ? (
                 <View>
-                  <Text>ID: {userData.user_id}</Text>
-                  <Text>Nome: {userData.nome}</Text>
-                  <Text>Login: {userData.login}</Text>
-                  <Text>Criado em: {new Date(userData.created_at).toLocaleDateString()}</Text>
+                  <View style={styles.containerInfo}>
+                    <Text style={styles.textInfoTitle}>ID:</Text>
+                    <Text style={styles.texrInfoDesc}> {userData.user_id}</Text>
+                  </View>
+                  <View style={styles.containerInfo}>
+                    <Text style={styles.textInfoTitle}>Nome:</Text>
+                    <Text style={styles.texrInfoDesc}> {userData.nome}</Text>
+                  </View>
+                  <View style={styles.containerInfo}>
+                    <Text style={styles.textInfoTitle}>Login:</Text>
+                    <Text style={styles.texrInfoDesc}> {userData.login}</Text>
+                  </View>
+                  <View style={styles.containerInfo}>
+                    <Text style={styles.textInfoTitle}>Criado em:</Text>
+                    <Text style={styles.texrInfoDesc}> {new Date(userData.created_at).toLocaleDateString()}</Text>
+                  </View>
                   <View style={styles.buttonCenter}>
-                    <Pressable style={styles.button} onPress={() => router.push(`/profile?userId=${userId}`)} >
+                    <Pressable style={styles.button} onPress={() => router.push(`/edit?userId=${userId}`)} >
                       <Text style={styles.buttonText}>Editar</Text>
                     </Pressable>
                   </View>
@@ -179,4 +191,16 @@ const styles = StyleSheet.create({
     height: 100,
     width: 150,
   },
+  containerInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 10,
+  },
+  textInfoTitle: {
+    fontSize: 20,
+    fontWeight: 400,
+  },
+  texrInfoDesc: {
+    fontSize: 14,
+  }
 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import colors from '@/constants/colors';
+import colors from '../../constants/Colors';
 import { Link, useRouter } from 'expo-router'
 import { View, Text, StyleSheet, TextInput, Pressable, Image, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

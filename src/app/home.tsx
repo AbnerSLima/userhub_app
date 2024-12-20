@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import colors from '@/constants/colors';
+import colors from '../../constants/Colors';
 import { Link, useRouter, } from "expo-router";
 import {
   View,
